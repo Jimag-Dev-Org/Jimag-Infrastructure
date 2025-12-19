@@ -14,6 +14,6 @@ variable "name_prefix" {
 }
 
 variable "ecr_repos" {
-  description = "List of logical ECR repos for this env"
+  description = "List of logical ECR repos for this env."
   type        = list(string)
 }
