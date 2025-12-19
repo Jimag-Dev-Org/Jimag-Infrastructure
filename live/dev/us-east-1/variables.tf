@@ -9,7 +9,7 @@ variable "aws_region" {
 }
 
 variable "name_prefix" {
-  description = "Prefix for resource names in this env"
+  description = "Prefix for resource names in this env."
   type        = string
 }
 
