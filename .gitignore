@@ -1,0 +1,39 @@
+# ------------------------
+# Terraform
+# ------------------------
+
+# Local working directory (providers, modules cache, etc.)
+**/.terraform/
+
+# Terraform state (never commit)
+*.tfstate
+*.tfstate.*
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Local variable files (usually contain secrets)
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Do NOT ignore .terraform.lock.hcl – commit that file
+# (it pins provider versions and is important for reproducible runs)
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# ------------------------
+# OS / editor junk
+# ------------------------
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.swp
+*.swo
