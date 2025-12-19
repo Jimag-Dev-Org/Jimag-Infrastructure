@@ -4,7 +4,7 @@ variable "env" {
 }
 
 variable "aws_region" {
-  description = "AWS region"
+  description = "AWS region."
   type        = string
 }
 
