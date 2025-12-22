@@ -147,7 +147,7 @@ resource "aws_iam_policy" "github_terraform_policy" {
 
       # --- EC2 / VPC networking (for VPC subnets, route tables, SGs, ENIs, etc.) ---
       {
-        "Sid" : "Ec2VpcDescribe",
+        "Sid" : "Ec2VpcDescribes",
         "Effect" : "Allow",
         "Action" : [
           "ec2:DescribeVpcs",
