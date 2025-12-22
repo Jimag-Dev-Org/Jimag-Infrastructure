@@ -64,11 +64,13 @@ resource "aws_iam_policy" "github_terraform_policy" {
           "s3:PutObject",
           "s3:DeleteObject",
           "s3:ListBucket",
-          "s3:GetBucketLocation"
+          "s3:GetBucketLocation",
+          "s3:ListAllMyBuckets"
         ]
         Resource = [
           "arn:aws:s3:::jimag-terraform-state-dev",  # ⬅️ update
-          "arn:aws:s3:::jimag-terraform-state-dev/*" # ⬅️ update
+          "arn:aws:s3:::jimag-terraform-state-dev/*",
+          "*" # ⬅️ update
         ]
       },
       # DynamoDB lock
@@ -122,6 +124,14 @@ resource "aws_iam_policy" "github_terraform_policy" {
           "secretsmanager:DescribeSecret"
         ]
         Resource = "arn:aws:secretsmanager:${var.aws_region}:${local.account_id}:secret:/jimag/dev/*"
+      },
+      {
+        "Sid": "IamGetRoleSelf",
+        "Effect": "Allow",
+        "Action": [
+          "iam:GetRole"
+        ],
+        "Resource": "arn:aws:iam::${local.account_id}:role/Githubrole-forinfra"
       }
     ]
   })
