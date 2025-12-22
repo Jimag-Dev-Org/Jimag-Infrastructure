@@ -81,7 +81,7 @@ module "rds" {
 
   engine         = "postgres"
   engine_version = "16.3"
-  family = "postgres16"
+  family         = "postgres16"
 
   instance_class = "db.t3.micro"
 
