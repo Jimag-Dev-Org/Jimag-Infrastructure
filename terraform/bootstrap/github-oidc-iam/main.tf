@@ -132,6 +132,215 @@ resource "aws_iam_policy" "github_terraform_policy" {
           "iam:GetRole"
         ],
         "Resource" : "arn:aws:iam::${local.account_id}:role/Githubrole-forinfra"
+      },
+      {
+        "Sid" : "SsmReadEksOptimizedAmis",
+        "Effect" : "Allow",
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+          "ssm:DescribeParameters"
+        ],
+        "Resource" : "arn:aws:ssm:${var.aws_region}::parameter/aws/service/eks/*"
+      },
+
+      # --- EC2 / VPC networking (for VPC subnets, route tables, SGs, ENIs, etc.) ---
+      {
+        "Sid" : "Ec2VpcDescribe",
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeNatGateways",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeVpcEndpoints",
+          "ec2:DescribeVpcPeeringConnections"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "Ec2VpcManage",
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:CreateVpc",
+          "ec2:DeleteVpc",
+          "ec2:CreateSubnet",
+          "ec2:DeleteSubnet",
+          "ec2:CreateRouteTable",
+          "ec2:DeleteRouteTable",
+          "ec2:CreateRoute",
+          "ec2:DeleteRoute",
+          "ec2:AssociateRouteTable",
+          "ec2:DisassociateRouteTable",
+          "ec2:CreateInternetGateway",
+          "ec2:AttachInternetGateway",
+          "ec2:DetachInternetGateway",
+          "ec2:DeleteInternetGateway",
+          "ec2:CreateNatGateway",
+          "ec2:DeleteNatGateway",
+          "ec2:AllocateAddress",
+          "ec2:ReleaseAddress",
+          "ec2:CreateSecurityGroup",
+          "ec2:DeleteSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress",
+          "ec2:CreateTags",
+          "ec2:DeleteTags"
+        ],
+        "Resource" : "*"
+      },
+
+      # --- EKS clusters + nodegroups (terraform-aws-modules/eks) ---
+      {
+        "Sid" : "EksClusterAndNodegroups",
+        "Effect" : "Allow",
+        "Action" : [
+          "eks:CreateCluster",
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:UpdateClusterConfig",
+          "eks:UpdateClusterVersion",
+          "eks:DeleteCluster",
+          "eks:TagResource",
+          "eks:UntagResource",
+          "eks:CreateNodegroup",
+          "eks:UpdateNodegroupConfig",
+          "eks:UpdateNodegroupVersion",
+          "eks:DescribeNodegroup",
+          "eks:ListNodegroups",
+          "eks:DeleteNodegroup"
+        ],
+        "Resource" : [
+          "arn:aws:eks:${var.aws_region}:${local.account_id}:cluster/*",
+          "arn:aws:eks:${var.aws_region}:${local.account_id}:nodegroup/*/*/*"
+        ]
+      },
+
+      # --- IAM for EKS nodegroups / cluster roles (created by module) ---
+      {
+        "Sid" : "IamForEksRoles",
+        "Effect" : "Allow",
+        "Action" : [
+          "iam:CreateRole",
+          "iam:DeleteRole",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:TagRole",
+          "iam:UntagRole",
+          "iam:GetRole",
+          "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
+          "iam:PassRole"
+        ],
+        "Resource" : "arn:aws:iam::${local.account_id}:role/jimag-eks-*"
+      },
+
+      # --- Auto Scaling Groups for nodegroups ---
+      {
+        "Sid" : "AutoScalingForEks",
+        "Effect" : "Allow",
+        "Action" : [
+          "autoscaling:CreateAutoScalingGroup",
+          "autoscaling:UpdateAutoScalingGroup",
+          "autoscaling:DeleteAutoScalingGroup",
+          "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeScalingActivities",
+          "autoscaling:PutScalingPolicy",
+          "autoscaling:DeletePolicy",
+          "autoscaling:DescribePolicies",
+          "autoscaling:SetDesiredCapacity",
+          "autoscaling:TerminateInstanceInAutoScalingGroup"
+        ],
+        "Resource" : "*"
+      },
+
+      # --- RDS instances, subnet groups, parameter groups for inventory DB ---
+      {
+        "Sid" : "RdsManage",
+        "Effect" : "Allow",
+        "Action" : [
+          "rds:CreateDBInstance",
+          "rds:ModifyDBInstance",
+          "rds:DeleteDBInstance",
+          "rds:DescribeDBInstances",
+          "rds:CreateDBSubnetGroup",
+          "rds:ModifyDBSubnetGroup",
+          "rds:DeleteDBSubnetGroup",
+          "rds:DescribeDBSubnetGroups",
+          "rds:CreateDBParameterGroup",
+          "rds:ModifyDBParameterGroup",
+          "rds:DeleteDBParameterGroup",
+          "rds:DescribeDBParameterGroups",
+          "rds:DescribeDBParameters",
+          "rds:AddTagsToResource",
+          "rds:ListTagsForResource"
+        ],
+        "Resource" : "*"
+      },
+
+      # --- S3 buckets for app data (images, logs, etc.) ---
+      {
+        "Sid" : "AppBuckets",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:CreateBucket",
+          "s3:DeleteBucket",
+          "s3:GetBucketLocation",
+          "s3:PutBucketPolicy",
+          "s3:GetBucketPolicy",
+          "s3:PutBucketTagging",
+          "s3:GetBucketTagging",
+          "s3:PutBucketLifecycleConfiguration",
+          "s3:GetBucketLifecycleConfiguration",
+          "s3:PutEncryptionConfiguration",
+          "s3:GetEncryptionConfiguration"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::jimag-autos-images-dev", # ⬅️ update names
+          "arn:aws:s3:::jimag-autos-images-preprod",
+          "arn:aws:s3:::jimag-autos-images-prod"
+        ]
+      },
+      {
+        "Sid" : "AppBucketObjects",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::jimag-autos-images-dev/*",
+          "arn:aws:s3:::jimag-autos-images-preprod/*",
+          "arn:aws:s3:::jimag-autos-images-prod/*"
+        ]
+      },
+
+      # --- CloudWatch Logs (for EKS / RDS / app logs wired by modules) ---
+      {
+        "Sid" : "CloudWatchLogsManage",
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:PutRetentionPolicy",
+          "logs:DeleteLogGroup",
+          "logs:TagLogGroup",
+          "logs:UntagLogGroup"
+        ],
+        "Resource" : "arn:aws:logs:${var.aws_region}:${local.account_id}:log-group:/aws/*"
       }
     ]
   })
