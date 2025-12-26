@@ -1,0 +1,38 @@
+name: Terraform destroy (dev)
+
+on:
+  workflow_dispatch:
+    inputs:
+      region:
+        description: "AWS region"
+        required: true
+        default: "us-east-1"
+        type: choice
+        options:
+          - us-east-1
+          - us-west-2
+
+jobs:
+  destroy-dev:
+    runs-on: ubuntu-latest
+    environment: dev   # so you can require approval if you want
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Terraform init (dev)
+        run: |
+          cd live/dev/${{ inputs.region }}
+          terraform init
+
+      - name: Terraform destroy (dev)
+        run: |
+          cd live/dev/${{ inputs.region }}
+          terraform destroy -auto-approve
