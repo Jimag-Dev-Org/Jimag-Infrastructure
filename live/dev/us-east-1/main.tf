@@ -118,7 +118,7 @@ module "images_bucket" {
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
-  restrict_public_buckets = true
+  restrict_public_buckets = true # helpes restrict public access
   force_destroy           = true # dev: allow bucket delete even with objects
   versioning = {
     enabled = true
