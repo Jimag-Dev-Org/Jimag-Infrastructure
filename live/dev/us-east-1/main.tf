@@ -115,8 +115,8 @@ module "images_bucket" {
   bucket = "${var.name_prefix}-car-images"
 
   acl                     = "private"
-  block_public_acls       = true
-  block_public_policy     = true  # helps block any public policies
+  block_public_acls       = true # helps block any public ACLs
+  block_public_policy     = true # helps block any public policies
   ignore_public_acls      = true # helps ignore any public ACLs
   restrict_public_buckets = true # helps restrict public access
   force_destroy           = true # dev: allow bucket delete even with objects
