@@ -18,7 +18,7 @@ on:
       - 'terraform/bootstrap/**'
 
 permissions:
-  contents: read
+  contents: read    # to checkout code
   id-token: write      # needed for OIDC
   pull-requests: write # optional, if you want to comment on PR later
 
