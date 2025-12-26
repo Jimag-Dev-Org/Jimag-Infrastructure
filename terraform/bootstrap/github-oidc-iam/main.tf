@@ -5,10 +5,22 @@ locals {
 
   github_oidc_arn = "arn:aws:iam::${local.account_id}:oidc-provider/token.actions.githubusercontent.com"
 
-  github_sub_patterns = [
+  # Branch-based subjects (develop, main, etc.)
+  github_branch_sub_patterns = [
     for b in var.allowed_branches :
     "repo:${var.github_org}/${var.github_repo}:ref:refs/heads/${b}"
   ]
+
+  # PR-based subject
+  github_pr_sub_patterns = [
+    "repo:${var.github_org}/${var.github_repo}:pull_request"
+  ]
+
+  # Final list used in the trust policy
+  github_sub_patterns = concat(
+    local.github_branch_sub_patterns,
+    local.github_pr_sub_patterns
+  )
 }
 
 resource "aws_iam_openid_connect_provider" "github" {
