@@ -12,10 +12,15 @@ on:
           - us-east-1
           - us-west-2
 
+# 🔹 Needed for GitHub OIDC → AWS
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   destroy-dev:
     runs-on: ubuntu-latest
-    environment: dev   # so you can require approval if you want
+    environment: dev   # fine to keep
 
     steps:
       - name: Checkout
@@ -28,11 +33,9 @@ jobs:
           aws-region: ${{ inputs.region }}
 
       - name: Terraform init (dev)
-        run: |
-          cd live/dev/${{ inputs.region }}
-          terraform init
+        working-directory: live/dev/${{ inputs.region }}
+        run: terraform init -input=false
 
       - name: Terraform destroy (dev)
-        run: |
-          cd live/dev/${{ inputs.region }}
-          terraform destroy -auto-approve
+        working-directory: live/dev/${{ inputs.region }}
+        run: terraform destroy -auto-approve -input=false
