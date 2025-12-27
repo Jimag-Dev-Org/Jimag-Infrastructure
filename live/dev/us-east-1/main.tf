@@ -31,6 +31,9 @@ module "vpc" {
   }
 }
 
+
+
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
@@ -74,6 +77,36 @@ module "eks" {
   }
 }
 
+
+
+resource "aws_security_group" "rds" {
+  name        = "${var.name_prefix}-rds-sg"
+  description = "Allow Postgres from EKS nodes"
+  vpc_id      = module.vpc.vpc_id
+
+  # Allow Postgres from the EKS node security group
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [module.eks.node_security_group_id]
+  }
+
+  # Allow RDS to talk out (for DNS, KMS, etc.)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Environment = var.env
+    Terraform   = "true"
+  }
+}
+
+
 module "rds" {
   source = "terraform-aws-modules/rds/aws"
 
@@ -100,7 +133,7 @@ module "rds" {
   skip_final_snapshot     = true  # dev only; prod will be false
   backup_retention_period = 3
 
-  vpc_security_group_ids = [module.vpc.default_security_group_id]
+  vpc_security_group_ids = [aws_security_group.rds.id]
 
   subnet_ids = module.vpc.private_subnets
 
