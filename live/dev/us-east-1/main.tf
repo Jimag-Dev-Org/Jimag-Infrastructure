@@ -91,30 +91,34 @@ module "eks" {
 
 resource "aws_security_group" "rds" {
   name        = "${var.name_prefix}-rds-sg"
-  description = "Allow Postgres from EKS nodes"
+  description = "RDS Postgres security group"
   vpc_id      = module.vpc.vpc_id
 
-  # Allow Postgres from the EKS node security group
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = ["10.0.0.0/16"]
-  }
 
-  # Allow RDS to talk out (for DNS, KMS, etc.)
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   tags = {
     Environment = var.env
     Terraform   = "true"
   }
 }
+resource "aws_vpc_security_group_ingress_rule" "rds_postgres_from_vpc" {
+  security_group_id = aws_security_group.rds.id
+
+  description = "Allow Postgres from VPC CIDR"
+  cidr_ipv4   = "10.0.0.0/16" # ⬅️ your VPC CIDR
+  from_port   = 5432
+  to_port     = 5432
+  ip_protocol = "tcp"
+}
+
+resource "aws_vpc_security_group_egress_rule" "rds_egress_all" {
+  security_group_id = aws_security_group.rds.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  ip_protocol = "-1" # all protocols
+}
+
+
 
 
 module "db" {
