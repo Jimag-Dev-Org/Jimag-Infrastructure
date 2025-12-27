@@ -24,10 +24,6 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "db_username" {
-  description = "Postgres master username"
-  type        = string
-}
 
 variable "db_password" {
   description = "Postgres master password"
@@ -44,4 +40,10 @@ variable "app_subdomain" {
   description = "Subdomain for the app in this env, e.g. dev"
   type        = string
   default     = "dev"
+}
+
+variable "db_username" {
+  description = "Username for rds db"
+  type        = string
+  default     = "jimagorg"
 }
