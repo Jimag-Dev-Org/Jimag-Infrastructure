@@ -89,6 +89,7 @@ module "rds" {
   max_allocated_storage = 100
 
   db_name                     = "jimag_inventory"
+  username                    = var.db_username
   manage_master_user_password = true
 
   multi_az                = false # dev only
@@ -114,12 +115,14 @@ module "images_bucket" {
 
   bucket = "${var.name_prefix}-car-images"
 
-  acl                     = "private"
-  block_public_acls       = true # helps block any public ACLs
-  block_public_policy     = true # helps block any public policies
-  ignore_public_acls      = true # helps ignore any public ACLs
-  restrict_public_buckets = true # helps restrict public access
-  force_destroy           = true # dev: allow bucket delete even with objects
+  acl                      = null
+  control_object_ownership = true
+  object_ownership         = "BucketOwnerEnforced" # disables ACLs
+  block_public_acls        = true                  # helps block any public ACLs
+  block_public_policy      = true                  # helps block any public policies
+  ignore_public_acls       = true                  # helps ignore any public ACLs
+  restrict_public_buckets  = true                  # helps restrict public access
+  force_destroy            = true                  # dev: allow bucket delete even with objects
   versioning = {
     enabled = true
   }
