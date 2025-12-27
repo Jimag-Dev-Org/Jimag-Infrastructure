@@ -41,6 +41,16 @@ module "eks" {
   name               = "${var.name_prefix}-eks"
   kubernetes_version = "1.33"
 
+  addons = {
+    coredns = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    kube-proxy = {}
+    vpc-cni = {
+      before_compute = true
+    }
+  }
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
@@ -59,10 +69,10 @@ module "eks" {
       min_size     = 1
       max_size     = 3
 
-      instance_types = ["t3.medium"]
-      capacity_type  = "ON_DEMAND"
-
-      subnet_ids = module.vpc.private_subnets
+      instance_types             = ["t3.medium"]
+      capacity_type              = "ON_DEMAND"
+      iam_role_attach_cni_policy = true
+      subnet_ids                 = module.vpc.private_subnets
 
       tags = {
         Name        = "${var.name_prefix}-eks-ng-default"
@@ -89,7 +99,7 @@ resource "aws_security_group" "rds" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [module.eks.node_security_group_id]
+    security_groups = ["10.0.0.0/16"]
   }
 
   # Allow RDS to talk out (for DNS, KMS, etc.)
@@ -107,7 +117,7 @@ resource "aws_security_group" "rds" {
 }
 
 
-module "rds" {
+module "db" {
   source = "terraform-aws-modules/rds/aws"
 
   identifier = "${var.name_prefix}-inventory-db"
@@ -135,8 +145,8 @@ module "rds" {
 
   vpc_security_group_ids = [aws_security_group.rds.id]
 
-  subnet_ids = module.vpc.private_subnets
-
+  subnet_ids             = module.vpc.private_subnets
+  create_db_subnet_group = true
   tags = {
     Environment = var.env
     Terraform   = "true"
