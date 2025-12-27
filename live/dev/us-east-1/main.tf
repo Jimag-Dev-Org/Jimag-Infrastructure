@@ -80,7 +80,7 @@ module "rds" {
   identifier = "${var.name_prefix}-inventory-db"
 
   engine         = "postgres"
-  engine_version = "16.3"
+  engine_version = "16.10-R2"
   family         = "postgres16"
 
   instance_class = "db.t3.micro"

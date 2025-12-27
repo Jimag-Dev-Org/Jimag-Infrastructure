@@ -190,7 +190,9 @@ resource "aws_iam_policy" "github_terraform_policy" {
           "kms:Encrypt",
           "kms:Decrypt",
           "kms:GenerateDataKey",
-          "kms:ReEncrypt*"
+          "kms:ReEncrypt*",
+          "kms:TagResource",
+          "kms:*"
         ]
         Resource = "*"
       }
