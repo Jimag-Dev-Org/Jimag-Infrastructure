@@ -72,7 +72,7 @@ module "eks" {
       instance_types             = ["t3.medium"]
       capacity_type              = "ON_DEMAND"
       iam_role_attach_cni_policy = true
-      subnet_ids                 = module.vpc.private_subnets
+      subnet_ids                 = module.vpc.private_subnets # nodes in private subnets
 
       tags = {
         Name        = "${var.name_prefix}-eks-ng-default"

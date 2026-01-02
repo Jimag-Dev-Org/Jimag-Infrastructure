@@ -20,7 +20,6 @@ permissions:
 jobs:
   destroy-dev:
     runs-on: ubuntu-latest
-    environment: dev   # fine to keep
 
     steps:
       - name: Checkout
@@ -31,6 +30,11 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ inputs.region }}
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5    
 
       - name: Terraform init (dev)
         working-directory: live/dev/${{ inputs.region }}
