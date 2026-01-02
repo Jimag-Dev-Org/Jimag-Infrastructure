@@ -1,7 +1,14 @@
 resource "kubernetes_namespace_v1" "argocd" {
   metadata {
     name = "argocd"
+    labels = {
+      "app.kubernetes.io/name"       = "argocd"
+      "app.kubernetes.io/part-of"    = "argocd"
+      "app.kubernetes.io/managed-by" = "terraform"
+    }
   }
+
+  depends_on = [aws_eks_access_policy_association.github_infra_role_admin]
 }
 
 
@@ -17,4 +24,5 @@ resource "helm_release" "argocd" {
   values = [
     file("${path.module}/values-argocd-dev.yaml")
   ]
+  depends_on = [aws_eks_access_policy_association.github_infra_role_admin]
 }

@@ -1,6 +1,17 @@
-# Keep the Argo CD server internal for now; we can add ALB/Ingress later.
 server:
   service:
-    type: ClusterIP
+    type: LoadBalancer
+  ingress:
+    enabled: false
+redis:
+  enabled: true
 
-# (Later we can set up RBAC, resource limits, ingress, etc.)
+controller:
+  metrics:
+    enabled: true
+server:
+  metrics:
+    enabled: true
+repoServer:
+  metrics:
+    enabled: true
