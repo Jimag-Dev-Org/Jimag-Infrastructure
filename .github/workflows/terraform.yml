@@ -37,7 +37,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.9.5
+          terraform_version: 1.11.0
 
       - name: Terraform fmt (check)
         run: terraform fmt -check -recursive
@@ -66,7 +66,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.9.5
+          terraform_version: 1.11.0
 
       - name: Terraform init
         working-directory: live/dev/us-east-1
@@ -102,7 +102,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.9.5
+          terraform_version: 1.11.0
 
       - name: Download plan artifact
         uses: actions/download-artifact@v4
