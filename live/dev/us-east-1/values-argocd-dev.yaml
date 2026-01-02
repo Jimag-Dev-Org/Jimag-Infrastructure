@@ -1,0 +1,6 @@
+# Keep the Argo CD server internal for now; we can add ALB/Ingress later.
+server:
+  service:
+    type: ClusterIP
+
+# (Later we can set up RBAC, resource limits, ingress, etc.)
