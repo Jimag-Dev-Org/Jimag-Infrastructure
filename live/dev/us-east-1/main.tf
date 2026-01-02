@@ -122,7 +122,7 @@ resource "aws_vpc_security_group_egress_rule" "rds_egress_all" {
 
 
 module "db" {
-  source = "terraform-aws-modules/rds/aws"
+  source  = "terraform-aws-modules/rds/aws"
   version = "6.13.1"
 
   identifier = "${var.name_prefix}-inventory-db"
