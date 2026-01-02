@@ -25,11 +25,7 @@ variable "vpc_cidr" {
 }
 
 
-variable "db_password" {
-  description = "Postgres master password"
-  type        = string
-  sensitive   = true
-}
+
 
 variable "root_domain_name" {
   description = "Root Route53 hosted zone name, e.g. example.com"
