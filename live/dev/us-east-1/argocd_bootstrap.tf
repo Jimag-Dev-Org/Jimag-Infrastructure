@@ -1,4 +1,5 @@
 resource "kubernetes_namespace_v1" "argocd" {
+  provider = kubernetes.eks
   metadata {
     name = "argocd"
     labels = {
@@ -13,6 +14,7 @@ resource "kubernetes_namespace_v1" "argocd" {
 
 
 resource "helm_release" "argocd" {
+
   name      = "argo-cd"
   namespace = kubernetes_namespace_v1.argocd.metadata[0].name
 
