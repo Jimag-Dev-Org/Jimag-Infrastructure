@@ -43,3 +43,10 @@ variable "db_username" {
   type        = string
   default     = "jimagorg"
 }
+
+
+variable "enable_argo_bootstrap" {
+  type        = bool
+  description = "Whether to bootstrap ArgoCD and the root App-of-Apps"
+  default     = false # start with false for a clean bootstrap
+}
