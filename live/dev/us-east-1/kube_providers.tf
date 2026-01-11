@@ -2,7 +2,7 @@
 
 # Kubernetes provider - talks directly to the EKS API server
 provider "kubernetes" {
-  alias                  = "eks"
+  # alias                  = "eks"
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   exec {
