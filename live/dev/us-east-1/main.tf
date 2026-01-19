@@ -80,6 +80,9 @@ module "eks" {
       }
     }
   }
+  iam_role_additional_policies = {
+    ecr_read = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  }
 
   tags = {
     Environment = var.env

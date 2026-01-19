@@ -105,35 +105,9 @@ resource "aws_iam_policy" "github_terraform_policy" {
         Resource = "arn:aws:dynamodb:${var.aws_region}:${local.account_id}:table/jimag-terraform-locks-dev"
       },
 
-      # ------------------------------------------------------------------
-      # 3) ECR management for jimag-* repos (infra + app repos)
-      # ------------------------------------------------------------------
-      {
-        Sid    = "TerraformECRManagement"
-        Effect = "Allow"
-        Action = [
-          "ecr:CreateRepository",
-          "ecr:DeleteRepository",
-          "ecr:DescribeRepositories",
-          "ecr:DescribeImages",
-          "ecr:ListImages",
-          "ecr:GetRepositoryPolicy",
-          "ecr:SetRepositoryPolicy",
-          "ecr:PutLifecyclePolicy",
-          "ecr:GetLifecyclePolicy",
-          "ecr:DeleteLifecyclePolicy",
-          "ecr:TagResource",
-          "ecr:UntagResource",
-          "ecr:ListTagsForResource",
-          "ecr:DescribeRegistry",
-          "ecr:GetRegistryPolicy",
-          "ecr:PutImage"
-        ]
-        Resource = "arn:aws:ecr:${var.aws_region}:${local.account_id}:repository/jimag-*"
-      },
 
       # ------------------------------------------------------------------
-      # 4) Read public EKS-optimized AMIs from SSM (for EKS module)
+      # 3) Read public EKS-optimized AMIs from SSM (for EKS module)
       # ------------------------------------------------------------------
       {
         Sid    = "SsmReadEksOptimizedAmis"
@@ -154,7 +128,7 @@ resource "aws_iam_policy" "github_terraform_policy" {
       },
 
       # ------------------------------------------------------------------
-      # 5) Dev-only broad infra permissions
+      # 4) Dev-only broad infra permissions
       #
       #    This is the "make Terraform apply actually work" block.
       #    For DEV, we allow wide actions on infra-related services.
@@ -184,6 +158,8 @@ resource "aws_iam_policy" "github_terraform_policy" {
 
           # Logs for EKS, RDS, etc. (log groups, retention, tags)
           "logs:*",
+
+          "ecr:*",
 
           # Secrets Manager for DB passwords, app secrets, etc.
           "secretsmanager:*",
