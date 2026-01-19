@@ -15,13 +15,3 @@ server:
 repoServer:
   metrics:
     enabled: true
-configs:
-  repositories:
-    jimag-gitops:
-      url: https://github.com/Jimag-Dev-Org/Jimag-GitOps.git
-      usernameSecret:
-        name: argocd-github-jimag-gitops
-        key: username
-      passwordSecret:
-        name: argocd-github-jimag-gitops
-        key: password
