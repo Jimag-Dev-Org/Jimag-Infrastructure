@@ -5,15 +5,19 @@ locals {
 
   github_oidc_arn = "arn:aws:iam::${local.account_id}:oidc-provider/token.actions.githubusercontent.com"
 
+  # Repo-based subject for all repos in the org.
   # Branch-based subjects (develop, main, etc.)
-  github_branch_sub_patterns = [
-    for b in var.allowed_branches :
-    "repo:${var.github_org}/${var.github_repo}:ref:refs/heads/${b}"
-  ]
+  github_branch_sub_patterns = flatten([
+    for r in var.github_repos : [
+      for b in var.allowed_branches :
+      "repo:${var.github_org}/${r}:ref:refs/heads/${b}"
+    ]
+  ])
 
   # PR-based subject
   github_pr_sub_patterns = [
-    "repo:${var.github_org}/${var.github_repo}:pull_request"
+    for r in var.github_repos :
+    "repo:${var.github_org}/${r}:pull_request"
   ]
 
   # Final list used in the trust policy

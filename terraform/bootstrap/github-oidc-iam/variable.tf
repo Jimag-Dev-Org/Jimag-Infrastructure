@@ -10,10 +10,10 @@ variable "github_org" {
   description = "GitHub organization that owns the infra repo"
 }
 
-variable "github_repo" {
-  type        = string
-  default     = "Jimag-Infrastructure"
-  description = "Infra repo name"
+variable "github_repos" {
+  type        = list(string)
+  default     = ["Jimag-Infrastructure", "inventory-svc", "car-website-frontend", "Jimag-GitOps"]
+  description = "Infra repo names"
 }
 
 variable "allowed_branches" {
