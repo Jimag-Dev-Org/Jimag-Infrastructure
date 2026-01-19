@@ -105,7 +105,7 @@ resource "aws_iam_policy" "github_terraform_policy" {
         Resource = "arn:aws:dynamodb:${var.aws_region}:${local.account_id}:table/jimag-terraform-locks-dev"
       },
 
-      
+
       # ------------------------------------------------------------------
       # 3) Read public EKS-optimized AMIs from SSM (for EKS module)
       # ------------------------------------------------------------------
@@ -159,7 +159,7 @@ resource "aws_iam_policy" "github_terraform_policy" {
           # Logs for EKS, RDS, etc. (log groups, retention, tags)
           "logs:*",
 
-          "ecr:*", 
+          "ecr:*",
 
           # Secrets Manager for DB passwords, app secrets, etc.
           "secretsmanager:*",
