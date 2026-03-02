@@ -214,7 +214,7 @@ resource "kubernetes_secret_v1" "argocd_gitops_repo" {
   data = {
 
     url      = "https://github.com/Jimag-Dev-Org/Jimag-GitOps.git"
-    username = "git"
+    username = "x-access-token"
     password = var.argocd_gitops_pat
   }
 
