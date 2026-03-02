@@ -199,3 +199,28 @@ module "ecr_repos" {
 
   name = each.value
 }
+
+resource "kubernetes_secret" "argocd_gitops_repo" {
+  metadata {
+    name      = "argocd-github-jimag-gitops"
+    namespace = "argocd"
+    labels = {
+      # This label tells Argo: "This secret describes a Git repository"
+      "argocd.argoproj.io/secret-type" = "repository"
+    }
+  }
+
+  data = {
+
+    url      = "https://github.com/Jimag-Dev-Org/Jimag-GitOps.git"
+    username = "git"
+    password = var.argocd_gitops_pat
+  }
+
+  type = "Opaque"
+
+
+  depends_on = [
+    helm_release.argocd
+  ]
+}

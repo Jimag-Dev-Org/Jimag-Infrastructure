@@ -23,7 +23,7 @@ resource "kubernetes_manifest" "argocd_root_app_dev" {
 
       destination = {
         server    = "https://kubernetes.default.svc"
-        namespace = "argocd" # app-of-apps doesn't *have* to use argocd ns, but it's fine
+        namespace = "argocd"
       }
 
       syncPolicy = {
