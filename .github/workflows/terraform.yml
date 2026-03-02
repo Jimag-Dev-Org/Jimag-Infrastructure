@@ -75,6 +75,8 @@ jobs:
       - name: Terraform plan
         id: plan
         working-directory: live/dev/us-east-1
+        env:
+          TF_VAR_argocd_gitops_pat: ${{ secrets.ARGO_GITOPS_PAT }}
         run: terraform plan -input=false -out=tfplan-dev
 
       - name: Upload plan artifact
