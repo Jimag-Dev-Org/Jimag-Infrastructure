@@ -116,5 +116,7 @@ jobs:
 
       - name: Terraform apply (dev)
         working-directory: live/dev/us-east-1
+        env:
+          TF_VAR_argocd_gitops_pat: ${{ secrets.ARGO_GITOPS_PAT }}
         run: terraform apply -input=false tfplan-dev
         

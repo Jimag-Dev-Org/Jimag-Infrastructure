@@ -55,5 +55,5 @@ variable "argocd_gitops_pat" {
   type        = string
   description = "PAT used by ArgoCD to access the JIMAG GitOps repo"
   sensitive   = true
-  default = "git"
+  default     = "git"
 }
