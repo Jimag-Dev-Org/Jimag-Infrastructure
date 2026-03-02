@@ -22,7 +22,7 @@ resource "helm_release" "argocd" {
   chart      = "argo-cd"
   version    = "5.52.1" # example - pick a stable chart version
 
-  # For now we keep values minimal; we'll tune ingress, RBAC, etc. later
+  
   values = [
     file("${path.module}/values-argocd-dev.yaml")
   ]
