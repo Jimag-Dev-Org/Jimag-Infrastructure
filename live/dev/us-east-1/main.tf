@@ -200,7 +200,8 @@ module "ecr_repos" {
   name = each.value
 }
 
-resource "kubernetes_secret" "argocd_gitops_repo" {
+resource "kubernetes_secret_v1" "argocd_gitops_repo" {
+  provider = kubernetes.eks
   metadata {
     name      = "argocd-github-jimag-gitops"
     namespace = "argocd"
@@ -221,6 +222,7 @@ resource "kubernetes_secret" "argocd_gitops_repo" {
 
 
   depends_on = [
-    helm_release.argocd
+    helm_release.argocd,
+    module.eks
   ]
 }
