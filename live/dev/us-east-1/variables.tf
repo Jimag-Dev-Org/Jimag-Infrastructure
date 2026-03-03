@@ -1,5 +1,5 @@
 variable "env" {
-  description = "Environment name na this (e.g. dev, preprod, prod)"
+  description = "Environment name  (e.g. dev, preprod, prod)"
   type        = string
 }
 
@@ -48,7 +48,7 @@ variable "db_username" {
 variable "enable_argo_bootstrap" {
   type        = bool
   description = "Whether to bootstrap ArgoCD and the root App-of-Apps"
-  default     = true # start with false for a clean bootstrap
+  default     = false # start with false for a clean bootstrap
 }
 
 variable "argocd_gitops_pat" {
