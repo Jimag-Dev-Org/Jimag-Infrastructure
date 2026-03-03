@@ -227,21 +227,42 @@ resource "kubernetes_secret_v1" "argocd_gitops_repo" {
   ]
 }
 
-
-# Get the RDS-managed master secret ARN (module output)
+# RDS-managed master secret ARN from the RDS module output
 locals {
   rds_master_secret_arn = module.db.db_instance_master_user_secret_arn
 }
 
+# Fetch the latest version of the RDS-managed secret (JSON string)
+data "aws_secretsmanager_secret_version" "rds_master" {
+  secret_id = local.rds_master_secret_arn
+}
+
+# Decode the JSON payload from Secrets Manager
+locals {
+  rds_master = jsondecode(data.aws_secretsmanager_secret_version.rds_master.secret_string)
+
+  # These keys are what RDS stores in the managed secret JSON
+  db_username = local.rds_master.username
+  db_password = local.rds_master.password
+  db_host     = local.rds_master.host
+  db_port     = tostring(local.rds_master.port) # port may be number; make it string
+  db_name     = "jimag_inventory"
+}
+
 resource "aws_secretsmanager_secret" "inventory_db_app" {
   name        = "/jimag/dev/inventory/db"
-  description = "Pointer to RDS-managed secret ARN for inventory DB (no credentials stored here)"
+  description = "Stable inventory DB app secret for ESO (dev)"
 }
 
 resource "aws_secretsmanager_secret_version" "inventory_db_app" {
   secret_id = aws_secretsmanager_secret.inventory_db_app.id
+
+  # Store the fields ESO will fetch individually (username/password/host/port/dbname)
   secret_string = jsonencode({
-    rds_secret_arn = local.rds_master_secret_arn
-    dbname         = "jimag_inventory"
+    username = local.db_username
+    password = local.db_password
+    host     = local.db_host
+    port     = local.db_port
+    dbname   = local.db_name
   })
 }
