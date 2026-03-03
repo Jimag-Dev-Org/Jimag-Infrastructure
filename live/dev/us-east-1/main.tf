@@ -226,3 +226,22 @@ resource "kubernetes_secret_v1" "argocd_gitops_repo" {
     module.eks
   ]
 }
+
+
+# Get the RDS-managed master secret ARN (module output)
+locals {
+  rds_master_secret_arn = module.db.db_instance_master_user_secret_arn
+}
+
+resource "aws_secretsmanager_secret" "inventory_db_app" {
+  name        = "/jimag/dev/inventory/db"
+  description = "Pointer to RDS-managed secret ARN for inventory DB (no credentials stored here)"
+}
+
+resource "aws_secretsmanager_secret_version" "inventory_db_app" {
+  secret_id = aws_secretsmanager_secret.inventory_db_app.id
+  secret_string = jsonencode({
+    rds_secret_arn = local.rds_master_secret_arn
+    dbname         = "jimag_inventory"
+  })
+}

@@ -40,6 +40,7 @@ resource "kubernetes_manifest" "argocd_root_app_dev" {
 
   # ✅ Make sure Argo CD is installed (CRDs + controllers) before this runs
   depends_on = [
-    helm_release.argocd
+    helm_release.argocd,
+    module.eks
   ]
 }
