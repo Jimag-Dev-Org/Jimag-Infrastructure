@@ -10,7 +10,7 @@ resource "kubernetes_manifest" "argocd_root_app_dev" {
     kind       = "Application"
     metadata = {
       name      = "jimag-dev-root"
-      namespace = "argocd"
+      namespace = "argocd" # argo
     }
     spec = {
       project = "default"
