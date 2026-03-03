@@ -28,3 +28,30 @@ resource "helm_release" "argocd" {
   ]
   depends_on = [aws_eks_access_policy_association.github_infra_role_admin]
 }
+
+
+resource "kubernetes_namespace_v1" "external_secrets" {
+  provider = kubernetes.eks
+  metadata { name = "external-secrets" }
+}
+
+resource "helm_release" "external_secrets" {
+  name       = "external-secrets"
+  namespace  = kubernetes_namespace_v1.external_secrets.metadata[0].name
+  repository = "https://charts.external-secrets.io"
+  chart      = "external-secrets"
+  version    = "0.14.4"
+
+  values = [yamlencode({
+    installCRDs = true
+    serviceAccount = {
+      create = true
+      name   = "external-secrets"
+      annotations = {
+        "eks.amazonaws.com/role-arn" = aws_iam_role.eso_irsa.arn
+      }
+    }
+  })]
+
+  depends_on = [module.eks]
+}
