@@ -40,7 +40,7 @@ resource "aws_iam_policy" "eso_read_sm" {
         "secretsmanager:GetSecretValue",
         "secretsmanager:DescribeSecret"
       ]
-      Resource = aws_secretsmanager_secret.inventory_db_app.arn
+      Resource = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:/jimag/dev/inventory/db-*"
     }]
   })
 }
