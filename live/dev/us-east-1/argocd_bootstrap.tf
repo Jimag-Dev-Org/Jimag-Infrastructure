@@ -9,7 +9,7 @@ resource "kubernetes_namespace_v1" "argocd" {
     }
   }
 
-  depends_on = [aws_eks_access_policy_association.github_infra_role_admin]
+  depends_on = [aws_eks_access_policy_association.github_infra_role_admin, module.eks]
 }
 
 
@@ -26,7 +26,7 @@ resource "helm_release" "argocd" {
   values = [
     file("${path.module}/values-argocd-dev.yaml")
   ]
-  depends_on = [aws_eks_access_policy_association.github_infra_role_admin]
+  depends_on = [aws_eks_access_policy_association.github_infra_role_admin, module.eks]
 }
 
 
