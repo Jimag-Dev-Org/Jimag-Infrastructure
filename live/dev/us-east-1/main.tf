@@ -248,12 +248,13 @@ locals {
   db_name = "jimag_inventory"
 }
 
-data "aws_secretsmanager_secret" "inventory_db_app" {
+resource "aws_secretsmanager_secret" "inventory_db_app" {
   name = "/jimag/dev/inventory/db"
 }
 
+
 resource "aws_secretsmanager_secret_version" "inventory_db_app" {
-  secret_id = data.aws_secretsmanager_secret.inventory_db_app.id
+  secret_id = aws_secretsmanager_secret.inventory_db_app.id
   secret_string = jsonencode({
     username = local.db_username
     password = local.db_password
