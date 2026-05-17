@@ -263,3 +263,41 @@ resource "aws_secretsmanager_secret_version" "inventory_db_app" {
     dbname   = local.db_name
   })
 }
+
+resource "aws_iam_policy" "inventory_s3_access" {
+  name = "${var.name_prefix}-inventory-s3-access"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowInventoryImageObjectAccess"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:AbortMultipartUpload"
+        ]
+        Resource = "arn:aws:s3:::jimag-dev-car-images/*"
+      },
+      {
+        Sid    = "AllowInventoryImageBucketList"
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket"
+        ]
+        Resource = "arn:aws:s3:::jimag-dev-car-images"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "inventory_s3_attach" {
+  role       = aws_iam_role.inventory_s3_irsa.name
+  policy_arn = aws_iam_policy.inventory_s3_access.arn
+}
+
+output "inventory_s3_irsa_role_arn" {
+  value = aws_iam_role.inventory_s3_irsa.arn
+}
