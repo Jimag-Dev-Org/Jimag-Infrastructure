@@ -65,9 +65,9 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      desired_size = 2
-      min_size     = 1
-      max_size     = 3
+      desired_size = 3
+      min_size     = 2
+      max_size     = 4
 
       instance_types             = ["t3.medium"]
       capacity_type              = "ON_DEMAND"
@@ -170,9 +170,9 @@ module "images_bucket" {
   control_object_ownership = true
   object_ownership         = "BucketOwnerEnforced" # disables ACLs
   block_public_acls        = true                  # helps block any public ACLs
-  block_public_policy      = true                  # helps block any public policies
+  block_public_policy      = false                 # helps block any public policies
   ignore_public_acls       = true                  # helps ignore any public ACLs
-  restrict_public_buckets  = true                  # helps restrict public access
+  restrict_public_buckets  = false                 # helps restrict public access
   force_destroy            = true                  # dev: allow bucket delete even with objects
   versioning = {
     enabled = true
