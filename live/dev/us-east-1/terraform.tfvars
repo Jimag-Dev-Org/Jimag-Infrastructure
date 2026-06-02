@@ -7,4 +7,4 @@ vpc_cidr              = "10.0.0.0/16"
 db_username           = "jimag_dev"
 root_domain_name      = "example.com" # <-- replace with your real hosted zone later
 app_subdomain         = "dev"
-enable_argo_bootstrap = true # to bootsrapping alone
+enable_argo_bootstrap = false # to bootsrapping alone
